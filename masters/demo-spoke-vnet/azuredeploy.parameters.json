@@ -1,0 +1,31 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "globalCostCenterTag": {
+            "value": "ITSM"
+        },
+        "globalResourceOwnerTag": {
+            "value": "ITSM Jane"
+        },
+        "vmResourceGroup": {
+            "value": "lwp-eur-infra-spoke1-rsg"
+        },
+        "vnet": {
+            "value": {
+                "name": "lwp-eur-spoke1-vnt",
+                "resourceGroup": "lwp-eur-net-spoke1-rsg",
+                "addressPrefixes": [ "10.121.0.0/20" ],
+                "dnsServerAddresses": [ 
+                    "10.1.0.10"
+                ],
+                "subnets": [
+                    { "name": "dmz",           "addressPrefix": "10.121.1.0/24", "nsg": "allow-rdp" },
+                    { "name": "onprem",        "addressPrefix": "10.121.2.0/24", "nsg": "allow-rdp" },
+                    { "name": "domain",        "addressPrefix": "10.121.3.0/24", "nsg": "allow-rdp" },
+                    { "name": "aipscanner",    "addressPrefix": "10.121.4.0/24", "nsg": "allow-httphttps" }
+                ]
+            }
+        }
+    }
+}

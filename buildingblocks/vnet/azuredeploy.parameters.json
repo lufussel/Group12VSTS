@@ -1,0 +1,38 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "nsgResourceGroup": {
+            "value": "nsgs-rg"
+        },
+        "costCenterTag": {
+            "value": "Finance"
+        },
+        "resourceOwnerTag": {
+            "value": "John Smith"
+        },
+        "vnet": {
+            "value": {
+                "name": "prod",
+                "resourceGroup": "net-rg",
+                "addressPrefixes": [ "172.16.0.0/16" ],
+                "dnsServerAddresses": [ 
+                    "172.16.3.5",
+                    "172.16.3.6"
+                ],
+                "subnets": [
+                    { "name": "GatewaySubnet", "addressPrefix": "172.16.0.0/24", "nsg": "allow-rdp" },
+                    { "name": "web",       "addressPrefix": "172.16.1.0/24", "nsg": "allow-httphttps" },
+                    { "name": "app",       "addressPrefix": "172.16.2.0/24", "nsg": "allow-httphttps" },
+                    { "name": "sql",       "addressPrefix": "172.16.3.0/24", "nsg": "allow-sqlserver" },
+                    { "name": "domain",       "addressPrefix": "172.16.4.0/24", "nsg": "allow-domain" },
+                    { "name": "domain2",       "addressPrefix": "172.16.5.0/24", "nsg": "allow-domain" },
+                    { "name": "domain3",       "addressPrefix": "172.16.6.0/24", "nsg": "allow-domain" },
+                    { "name": "domain4",       "addressPrefix": "172.16.7.0/24", "nsg": "allow-domain" },
+                    { "name": "domain5",       "addressPrefix": "172.16.8.0/24", "nsg": "allow-domain" }
+
+                ]
+            }
+        }
+    }
+}

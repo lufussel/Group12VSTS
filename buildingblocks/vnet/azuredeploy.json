@@ -1,0 +1,111 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "nsgResourceGroup": {
+            "type": "string",
+            "defaultValue": "lwp-eur-nsgs-rsg",
+            "metadata": {
+                "Description": "Network Security Group resources"
+            }
+        },
+        "costCenterTag": {
+            "type": "string",
+            "metadata": {
+                "description": "Value for CostCenter tag."
+            }
+        },
+        "resourceOwnerTag": {
+            "type": "string",
+            "metadata": {
+                "description": "Value for ResourceOwner tag."
+            }
+        },
+        "vnet": {
+            "type": "object",
+            "defaultValue": {
+                "name": "prod",
+                "resourceGroup": "net-rg",
+                "addressPrefixes": [
+                    "172.16.0.0/16"
+                ],
+                "dnsServerAddresses": [
+                ],
+                "subnets": [
+                    {
+                        "name": "GatewaySubnet",
+                        "addressPrefix": "172.16.0.0/24",
+                        "nsg": "allow-rdp"
+                    },
+                    {
+                        "name": "web",
+                        "addressPrefix": "172.16.1.0/24",
+                        "nsg": "allow-httphttps"
+                    },
+                    {
+                        "name": "app",
+                        "addressPrefix": "172.16.2.0/24",
+                        "nsg": "allow-httphttps"
+                    },
+                    {
+                        "name": "sql",
+                        "addressPrefix": "172.16.3.0/24",
+                        "nsg": "allow-sqlserver"
+                    },
+                    {
+                        "name": "domain",
+                        "addressPrefix": "172.16.4.0/24",
+                        "nsg": "allow-domain"
+                    }
+                ]
+            },
+            "metadata": {
+                "description": "Virtual Network object, use to define subnet names, addresses and applied NSGs."
+            }
+        }
+    },
+    "variables": {
+        "vnetID": "[ resourceId(parameters('vnet').resourceGroup, 'Microsoft.Network/virtualNetworks', parameters('vnet').name)]"
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('vnet').name)]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2017-10-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "CostCenter": "[parameters('costCenterTag')]",
+                "ResourceOwner": "[parameters('resourceOwnerTag')]"
+            },
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": "[parameters('vnet').addressPrefixes]"
+                },
+                "dhcpOptions": {
+                    "dnsServers": "[parameters('vnet').dnsServerAddresses]"
+                },
+                "copy": [
+                    {
+                        "name": "subnets",
+                        "count": "[length(parameters('vnet').subnets)]",
+                        "input": {
+                            "name": "[parameters('vnet').subnets[copyIndex('subnets')].name]",
+                            "properties": {
+                                "addressPrefix": "[parameters('vnet').subnets[copyIndex('subnets')].addressPrefix]",
+                                "networkSecurityGroup": {
+                                    "id": "[resourceId(parameters('nsgResourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('vnet').subnets[copyIndex('subnets')].nsg)]"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+        "gatewayPipId": {
+            "type": "string",
+            "value": "[variables('vnetID')]"
+        }
+    }
+}

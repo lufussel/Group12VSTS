@@ -1,0 +1,35 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "globalCostCenterTag": {
+            "value": "HR"
+        },
+        "globalResourceOwnerTag": {
+            "value": "Jane Smith"
+        },
+        "globalShutdownAtWeekendTag": {
+            "value": "True"
+        },
+        "adminUsername": {
+            "value": "group12admin"
+        },
+        "vmResourceGroup": {
+            "value": "lwp-eur-infra-spoke1-rsg"
+        },
+        "vmPrefix": {
+            "value": "lwp-eur-"
+        },
+        "netResourceGroup": {
+            "value": "master-net-rg"
+        },
+        "vnet": {
+            "value": {
+                "name": "lwp-eur-spoke1-vnt",
+                "subnets": [
+                    { "name": "dmz",   "numberofVms": 1,   "vmSize": "small" }
+                ]
+            }
+        }
+    }
+}
